@@ -5,6 +5,7 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <unistd.h>
+#include <time.h>
 
 typedef struct {
     char* name;
@@ -138,18 +139,25 @@ int process_with_fread(const char* filename) {
 int main() {
     const char* filename = "q1-10mil.txt";
 
+    clock_t start_time = clock();
     printf("Processing using mmap:\n");
     if (process_with_mmap(filename)) {
         fprintf(stderr, "mmap processing failed.\n");
     }
+    clock_t end_time = clock();
+    double mmap_time = ((double) (end_time - start_time)) / CLOCKS_PER_SEC;
+    printf("mmap processing time: %.4f seconds\n", mmap_time);
 
+    start_time = clock();
     printf("\nProcessing using fread:\n");
     if (process_with_fread(filename)) {
         fprintf(stderr, "fread processing failed.\n");
     }
+    end_time = clock();
+    double fread_time = ((double) (end_time - start_time)) / CLOCKS_PER_SEC;
+    printf("fread processing time: %.4f seconds\n", fread_time);
 
     return 0;
 }
-
 
 
